@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Player</title>
+    <link rel="shortcut icon" href="#" />
+    <link rel="stylesheet" href="./assets/css/reset.css" />
+    <link rel="stylesheet" href="./assets/css/base.css" />
+    <link rel="stylesheet" href="./assets/css/main.css" />
+  </head>
+  <body>
+    <div class="player">
+      <div class="wrapper">
+        <div class="details">
+          <div class="now-playing">PLAYING x OF y</div>
+          <div class="track-art"></div>
+          <div class="track-name">Cứ chill thôi</div>
+          <div class="track-single">Suni Hạ Linh</div>
+        </div>
+
+        <div class="slider_container">
+          <div class="current-time">00:00</div>
+          <input type="range" id="seek_slider" class="seek_slider" min="1" max="100" step="1" value="0" />
+          <div class="total-duration">00:00</div>
+        </div>
+
+        <div class="slider_container volume-session">
+          <img class="volume-icon" src="./assets/images/icon-svg/volume-down.svg" alt="" />
+          <input type="range" id="volume_slider" class="volume_slider" min="1" max="100" value="1" />
+          <img class="volume-icon" src="./assets/images/icon-svg/volume-up.svg" alt="" />
+        </div>
+
+        <div class="buttons">
+          <div class="random-track">
+            <!-- <img src="./assets/images/icon-svg/random-track.svg" alt="" /> -->
+            <svg fill="#fff" width="36px" height="36px" viewBox="-7.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M14.92 17.56c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-0.6 0-1.080-0.32-1.6-0.96-0.28-0.36-0.8-0.44-1.2-0.16-0.36 0.28-0.44 0.8-0.16 1.2 0.84 1.12 1.8 1.64 2.92 1.64h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.16-2.24zM10.72 12.48h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.2-2.2c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-2.48 0-3.64 2.56-4.68 4.84-0.88 2-1.76 3.84-3.12 3.84h-2.080c-0.48 0-0.84 0.36-0.84 0.84s0.36 0.88 0.84 0.88h2.080c2.48 0 3.64-2.56 4.68-4.84 0.88-2 1.72-3.88 3.12-3.88zM0.84 12.48h2.080c0.6 0 1.080 0.28 1.56 0.92 0.16 0.2 0.4 0.32 0.68 0.32 0.2 0 0.36-0.040 0.52-0.16 0.36-0.28 0.44-0.8 0.16-1.2-0.84-1.040-1.8-1.6-2.92-1.6h-2.080c-0.48 0.040-0.84 0.4-0.84 0.88s0.36 0.84 0.84 0.84z"></path>
+            </svg>
+          </div>
+          <div class="prev-track">
+            <img src="./assets/images/icon-svg/prev.svg" alt="" />
+          </div>
+          <div class="playpause-track active">
+            <img class="playPauseIcon" src="./assets/images/icon-svg/play.svg" alt="" />
+          </div>
+          <div class="next-track">
+            <img src="./assets/images/icon-svg/next.svg" alt="" />
+          </div>
+          <div class="repeat-track">
+            <!-- <img class="reapeat-icon" src="./assets/images/icon-svg/repeat.svg" alt="" /> -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+            </svg>
+          </div>
+        </div>
+        <audio id="audio" src=""></audio>
+
+        <div id="wave">
+          <span class="stroke"></span>
+          <span class="stroke"></span>
+          <span class="stroke"></span>
+          <span class="stroke"></span>
+          <span class="stroke"></span>
+          <span class="stroke"></span>
+          <span class="stroke"></span>
+        </div>
+      </div>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
