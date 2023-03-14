@@ -3,6 +3,8 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
+const PLAYER_STORAGE_KEY = 'LIAMDEV_PLAYER_STORAGE_KEY';
+
 const nowPlaying = $('.now-playing');
 const trackArt = $('.track-art');
 const trackName = $('.track-name');
@@ -18,6 +20,7 @@ const nextButton = $('.next-track img');
 const prevButton = $('.prev-track img');
 const repeatButton = $('.repeat-track');
 const randomButton = $('.random-track');
+const wave = document.getElementById('wave');
 // console.log(playPauseIcon.src);
 
 const app = {
@@ -25,6 +28,11 @@ const app = {
   isPlaying: false,
   isRandom: false,
   isRepeat: false,
+  config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)) || {},
+  setConfig: function (key, value) {
+    this.config[key] = value;
+    localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(this.config));
+  },
   songs: [
     {
       name: 'Cứ Chill Thôi',
@@ -56,12 +64,6 @@ const app = {
       path: './assets/music/listSong1/song5.mp3',
       image: './assets/images/listSong1/song5.jpg',
     },
-    // {
-    //   name: 'Cửu Vĩ Hồ',
-    //   singer: ['Yun', 'Dr A'],
-    //   path: './assets/music/listSong1/song6.mp3',
-    //   image: './assets/images/listSong1/song6.jpg',
-    // },
     {
       name: 'Anh Đã Quen Với Cô Đơn',
       singer: ['Soobin Hoàng Sơn'],
@@ -140,12 +142,6 @@ const app = {
       path: './assets/music/listSong1/song19.mp3',
       image: './assets/images/listSong1/song19.jpg',
     },
-    // {
-    //   name: 'Thiên Lý Ơi',
-    //   singer: ['Jack', 'Bikay'],
-    //   path: './assets/music/listSong1/song20.mp3',
-    //   image: './assets/images/listSong1/song20.jpg',
-    // },
     {
       name: 'Phố Đã Lên Đèn',
       singer: ['Phố Đã Lên Đèn'],
@@ -291,7 +287,7 @@ const app = {
     });
     cdAnimate.pause();
     //Lắng nghe khi sự kiện khi nhấn nút play
-    playPauseBtn.onclick = () => {
+    playPauseBtn.onclick = function () {
       if (_this.isPlaying) {
         audio.pause();
       } else {
@@ -299,20 +295,22 @@ const app = {
       }
     };
     //Khi bài hát được play
-    audio.onplay = () => {
+    audio.onplay = function () {
       _this.isPlaying = true;
+      wave.classList.add('loader');
       playPauseIcon.src = './assets/images/icon-svg/pause.svg';
       cdAnimate.play();
     };
     //Khi bài hát được pause
-    audio.onpause = () => {
+    audio.onpause = function () {
       _this.isPlaying = false;
+      wave.classList.remove('loader');
       playPauseIcon.src = './assets/images/icon-svg/play.svg';
       cdAnimate.pause();
     };
 
     //Load thanh tiến độ bài hát
-    audio.ontimeupdate = () => {
+    audio.ontimeupdate = function () {
       if (audio.duration) {
         const currentTimePercent = Math.floor((audio.currentTime / audio.duration) * 100);
         // console.log(currentTimePercent);
@@ -322,27 +320,21 @@ const app = {
     };
 
     //Xử lý khi tua thanh tiến độ
-    seekSlider.oninput = (e) => {
+    seekSlider.oninput = function (e) {
       const seekTime = (audio.duration / 100) * e.target.value;
       audio.currentTime = seekTime;
     };
-
-    //Load âm lượng bài hát -- Đang lỗi
-    audio.onvolumechange = () => {
-      const currentVolume = audio.value.toString;
-      volumeSlider.value = currentVolume;
-    };
     //Next song
-    nextButton.onclick = () => {
-      if (this.isRandom) {
-        this.playRandomSong();
+    nextButton.onclick = function () {
+      if (_this.isRandom) {
+        _this.playRandomSong();
       } else {
-        this.nextSong();
+        _this.nextSong();
       }
       audio.play();
     };
     //Prev song
-    prevButton.onclick = () => {
+    prevButton.onclick = function () {
       if (_this.isRandom) {
         _this.playRandomSong();
       } else {
@@ -352,13 +344,21 @@ const app = {
     };
 
     //random bật / tắt
-    randomButton.onclick = () => {
+    randomButton.onclick = function () {
       _this.isRandom = !_this.isRandom;
+      _this.setConfig('isRandom', _this.isRandom);
       randomButton.classList.toggle('active', _this.isRandom);
     };
 
+    //Xử lý repeat bài hát
+    repeatButton.onclick = function () {
+      _this.isRepeat = !_this.isRepeat;
+      _this.setConfig('isRepeat', _this.isRepeat);
+      repeatButton.classList.toggle('active', _this.isRepeat);
+    };
+
     //Xử lý khi bài hát kết thúc
-    audio.onended = () => {
+    audio.onended = function () {
       if (_this.isRandom) {
         _this.playRandomSong();
       } else if (_this.isRepeat) {
@@ -368,12 +368,6 @@ const app = {
       }
       audio.play();
     };
-
-    //Xử lý repeat bài hát
-    repeatButton.onclick = function (e) {
-      _this.isRepeat = !_this.isRepeat;
-      repeatButton.classList.toggle('active', _this.isRepeat);
-    };
   },
 
   //Hàm load bài hát đầu tiên
@@ -382,6 +376,7 @@ const app = {
     trackName.textContent = this.currentSong.name;
     trackSingle.textContent = this.currentSong.singer;
     audio.src = this.currentSong.path;
+    nowPlaying.innerHTML = `PLAYING ${this.currentIndex + 1} OF ${this.songs.length}`;
 
     //Hàm convert số giây sang phút -- Đang bị lỗi
 
@@ -393,6 +388,15 @@ const app = {
 
       totalDuration.textContent = `${formattedMinutes} : ${formattedSeconds}`;
     }
+  },
+
+  //Load âm lượng bài hát -- Đang lỗi
+
+  loadConfig() {
+    this.isRandom = this.config.isRandom;
+    this.isRepeat = this.config.isRepeat;
+
+    // Object.assign(this, this.config);
   },
 
   //next song
@@ -443,21 +447,34 @@ const app = {
 
   //Hàm khỏi tạo
   start() {
+    //Gán cấu hình từ config vào ứng dụng
+    this.loadConfig();
+    //Định nghĩa các thuộc tính trong ứng dụng
     this.defineProperties();
+    //Lắng nghe các sự kiện trong trang web
     this.handlerEvents();
     //load thông tin bài hát đầu tiên khi chạy ứng dụng
     this.loadCurrentSong();
-
+    // this.setVolume();
     // this.getRandomSongs();
+    randomButton.classList.toggle('active', this.isRandom);
+    repeatButton.classList.toggle('active', this.isRepeat);
   },
 };
 
 app.start();
 
+function setVolume(volume) {
+  let audio = document.getElementById('volume_slider');
+  if (audio) {
+    audio.volume = volume;
+  }
+}
+
 //Những thứ còn thiếu
 //1. Hiển thị số giây hiện tại
 //2. Hiển thị số giáy của bài hát
 //3. Tùy chỉnh âm lượng của bài hát
-//4. Repeat song
+//4. Repeat song *
 //5. Nốt nhạc bay
 //6. Hạn chế sự lặp lại của random
