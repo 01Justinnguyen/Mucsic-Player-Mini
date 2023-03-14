@@ -24,6 +24,7 @@ const app = {
   currentIndex: 0,
   isPlaying: false,
   isRandom: false,
+  isRepeat: false,
   songs: [
     {
       name: 'Cứ Chill Thôi',
@@ -333,10 +334,10 @@ const app = {
     };
     //Next song
     nextButton.onclick = () => {
-      if (_this.isRandom) {
-        _this.playRandomSong();
+      if (this.isRandom) {
+        this.playRandomSong();
       } else {
-        _this.nextSong();
+        this.nextSong();
       }
       audio.play();
     };
@@ -355,7 +356,26 @@ const app = {
       _this.isRandom = !_this.isRandom;
       randomButton.classList.toggle('active', _this.isRandom);
     };
+
+    //Xử lý khi bài hát kết thúc
+    audio.onended = () => {
+      if (_this.isRandom) {
+        _this.playRandomSong();
+      } else if (_this.isRepeat) {
+        audio.play();
+      } else {
+        _this.prevSong();
+      }
+      audio.play();
+    };
+
+    //Xử lý repeat bài hát
+    repeatButton.onclick = function (e) {
+      _this.isRepeat = !_this.isRepeat;
+      repeatButton.classList.toggle('active', _this.isRepeat);
+    };
   },
+
   //Hàm load bài hát đầu tiên
   loadCurrentSong() {
     trackArt.style.backgroundImage = `url(${this.currentSong.image})`;
